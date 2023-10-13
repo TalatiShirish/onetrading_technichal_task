@@ -1,0 +1,160 @@
+{
+	"info": {
+		"_postman_id": "7ec1c050-5995-484c-8c95-45bc049ac3e1",
+		"name": "DataDriven_CandleSticks_Error_Response",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetCandleSticks",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f657d755-15bf-461d-9774-737dcc41bc88",
+						"exec": [
+							"pm.collectionVariables.set(\"candlesticks_instrument_code\",pm.iterationData.get(\"candlesticks_instrument_code\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_unit_var\",pm.iterationData.get(\"candlesticks_unit_var\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_period_var\",pm.iterationData.get(\"candlesticks_period_var\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_from_time_var\",pm.iterationData.get(\"candlesticks_from_time_var\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_to_time_var\",pm.iterationData.get(\"candlesticks_to_time_var\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_instrument_code\",pm.iterationData.get(\"candlesticks_instrument_code\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_response_code\",pm.iterationData.get(\"candlesticks_response_code\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_response_text\",pm.iterationData.get(\"candlesticks_response_text\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_response_status\",pm.iterationData.get(\"candlesticks_response_status\"));\r",
+							"pm.collectionVariables.set(\"candlesticks_data_set\",pm.iterationData.get(\"candlesticks_data_set\"));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d80f0092-0e1e-4c2a-a0a0-2cc6ea416715",
+						"exec": [
+							"let candlesticks_response_text = pm.response.text();\r",
+							"pm.test(\"Response | Check Status code and status is as per the CSV file - CandleSticks\", function () {\r",
+							"        // Following code fails when run using newman/CLI\r",
+							"    pm.response.to.have.status(pm.collectionVariables.get(\"candlesticks_response_code\"));\r",
+							"    \r",
+							"    pm.expect(pm.response.status).to.include(pm.collectionVariables.get(\"candlesticks_response_status\"),\"Candlesticks response message is not matched for data set = \"+pm.collectionVariables.get(\"candlesticks_data_set\"));\r",
+							"});\r",
+							"pm.test(\"Response | Check response body text based as the CSV file - CandleSticks\", function () {\r",
+							"    pm.expect(candlesticks_response_text).to.include(pm.collectionVariables.get(\"candlesticks_response_text\"),\"Candle Sticks response message is not matched for data set = \"+pm.collectionVariables.get(\"candlesticks_data_set\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "fd28762e-333a-4982-a5af-b81bb3780ca2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/candlesticks/{{candlesticks_instrument_code}}?unit={{candlesticks_unit_var}}&period={{candlesticks_period_var}}&from={{candlesticks_from_time_var}}&to={{candlesticks_to_time_var}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"candlesticks",
+						"{{candlesticks_instrument_code}}"
+					],
+					"query": [
+						{
+							"key": "unit",
+							"value": "{{candlesticks_unit_var}}"
+						},
+						{
+							"key": "period",
+							"value": "{{candlesticks_period_var}}"
+						},
+						{
+							"key": "from",
+							"value": "{{candlesticks_from_time_var}}"
+						},
+						{
+							"key": "to",
+							"value": "{{candlesticks_to_time_var}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "c777839e-639a-4261-b2ee-8c6df954cf40",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c9d744f8-55aa-4d37-b56f-7d54c2e370df",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "candlesticks_instrument_code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_unit_var",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_period_var",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_from_time_var",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_to_time_var",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_response_code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_response_text",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_response_status",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "candlesticks_data_set",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

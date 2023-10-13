@@ -1,0 +1,9 @@
+﻿orderbook_instrument_code,orderbook_status_code,orderbook_response_message,orderbook_response_status
+BTC_EUR,200,BTC_EUR,OK
+/,404,NOT_FOUND,Not Found
+$,400,INVALID_INSTRUMENT_CODE,Bad Request
+\\,404,NOT_FOUND,Not Found
+12345646,400,INVALID_INSTRUMENT_CODE,Bad Request
+BTC_$$$,400,INVALID_INSTRUMENT_CODE,Bad Request
+$$$_EUR,400,INVALID_INSTRUMENT_CODE,Bad Request
+BTC_EUR,200,BTC_EUR,OK

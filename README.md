@@ -1,1 +1,25 @@
 # onetrading_technichal_task
+- This is demo Postaman framework for OneTrading Public API
+- Pre req:
+  -Ensure Postman is installed
+    - Link for Postman installation steps - https://learning.postman.com/docs/getting-started/installation/installation-and-updates/
+  - To run CLI , install newman and html reporting plugin
+    - Newman installation - https://learning.postman.com/docs/collections/using-newman-cli/installing-running-newman/
+    - Html reporting plugin - https://www.npmjs.com/package/newman-reporter-htmlextra
+- To Run A collection <PublicAPI> in Postman
+  - Import Required Collection File <PublicAPI.postman_collection.json>
+  - Import Environment Collection File <TestDomain.postman_environment.json>
+  - Select environment <TESTDomain> from top right hand side corner
+  - Click on Collection, Click on Run
+- To Run A Data Driven Collection in Postman
+  - Import Required Collection File <DataDriven_CandleSticks_Error_Response.postman_collection.json>
+  - Import Environment Collection File <TestDomain.postman_environment.json>
+  - Ensure the respective CSV file is saved locally - eg. for CandleSticks API - use CandleSticks.csv file 
+  - Select environment <TESTDomain> from top right hand side corner
+  - Click on Collection, Click on Run, Select CSV file
+  - Click on Run
+- To Run in newman CLI
+- Ensure <collection.json>, <Environement.environment.json> and <data.csv> files are in same folder
+- Open command prompt and naviagate to the postman collection folder
+- run the following command
+  - newman run DataDriven_CandleSticks_Error_Response.postman_collection.json -e TestDomain.postman_environment.json -d CandleSticks.csv -r htmlextra --insecure

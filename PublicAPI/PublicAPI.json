@@ -605,7 +605,7 @@
 					"script": {
 						"id": "bdd84356-0bd3-475c-8f55-170c13ff85c5",
 						"exec": [
-							"// NOT _ instrument code is retrived from Market Ticker\r",
+							"// Note _ instrument code is retrived from Market Ticker\r",
 							"\r",
 							"//ResponseCode\r",
 							"pm.test(\"Response| Check Status code is 200\", function () {\r",
@@ -640,7 +640,7 @@
 					"script": {
 						"id": "ee7a4236-55c5-4c53-bccd-7f88dc35b1d0",
 						"exec": [
-							"// NOT _ instrument code is retrived from Market Ticker\r",
+							"// Note _ instrument code is retrived from Market Ticker\r",
 							"\r",
 							"//ResponseCode\r",
 							"pm.test(\"Response| Check Status code is 200\", function () {\r",

@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "5e824abf-894f-4128-9880-6a4ef5c6375b",
+		"name": "DataDriven_OrderBook_Error_Response",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetOrderBook",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2e1c6211-b641-4e89-9dfc-ebd88ccc6538",
+						"exec": [
+							"pm.collectionVariables.set(\"orderbook_instrument_code\",pm.iterationData.get(\"orderbook_instrument_code\"));\r",
+							"pm.collectionVariables.set(\"orderbook_status_code\",pm.iterationData.get(\"orderbook_status_code\"));\r",
+							"pm.collectionVariables.set(\"orderbook_response_message\",pm.iterationData.get(\"orderbook_response_message\"));\r",
+							"pm.collectionVariables.set(\"orderbook_response_status\",pm.iterationData.get(\"orderbook_response_status\"));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1be82188-1272-4a46-a305-e6c1eea5cd4c",
+						"exec": [
+							"let orderbook_response_text = pm.response.text();\r",
+							"\r",
+							"pm.test(\"Response | Check Status code and status is as per the CSV file - Orderbook\", function () {\r",
+							"    // Following code fails when run using newman/CLI\r",
+							"    pm.response.to.have.status(pm.collectionVariables.get(\"orderbook_status_code\"));\r",
+							"    \r",
+							"    pm.expect(pm.response.status).to.include(pm.collectionVariables.get(\"orderbook_response_status\"),\"Orderbook response message is not matched for order instrument code =\"+pm.iterationData.get(\"orderbook_instrument_code\"));\r",
+							"});\r",
+							"pm.test(\"Response | Check response body text based as the CSV file - Orderbook\", function () {\r",
+							"    pm.expect(orderbook_response_text).to.include(pm.collectionVariables.get(\"orderbook_response_message\"),\"Orderbook response message is not matched for order instrument code =\"+pm.iterationData.get(\"orderbook_instrument_code\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "85ca8361-6da0-4ac2-9140-b594e1e18e25",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/order-book/{{orderbook_instrument_code}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "5713a10e-ddda-4bf2-9bb2-abfd02bb3da7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9f6622dc-5caa-4a22-b9c2-5b6945eb76b2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "orderbook_instrument_code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "orderbook_status_code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "orderbook_response_message",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "orderbook_response_status",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

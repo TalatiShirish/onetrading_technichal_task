@@ -1,0 +1,693 @@
+{
+	"info": {
+		"_postman_id": "6c2da819-3ec3-490b-a07f-597ad269194f",
+		"name": "PublicAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetCurrency_Positive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6a32dab3-d8c6-4b58-94c0-8b10a2dc18e6",
+						"exec": [
+							"let responseText = pm.response.text();\r",
+							"let jsonData = pm.response.json()\r",
+							"const dataSchema =\r",
+							"{\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"code\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"precision\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"code\",\r",
+							"        \"precision\"\r",
+							"      ]\r",
+							"    }\r",
+							"    \r",
+							"  ]\r",
+							"};\r",
+							"//  Generate random instrument code\r",
+							"let randomNumberForBaseCurrency = Math.floor(Math.random() *  jsonData.length);\r",
+							"let randomNumberForQuteCurrency = 0;\r",
+							"\r",
+							"while (randomNumberForBaseCurrency==randomNumberForQuteCurrency) {\r",
+							"    console.log(\"random number generated is \"+randomNumberForQuteCurrency);\r",
+							"    randomNumberForQuteCurrency=Math.floor(Math.random() *  jsonData.length);\r",
+							"    if(randomNumberForBaseCurrency!=randomNumberForQuteCurrency){break;}\r",
+							"} \r",
+							"\r",
+							"const instrument_code = jsonData[randomNumberForBaseCurrency].code+\"_\"+jsonData[randomNumberForQuteCurrency].code;\r",
+							"pm.environment.set(\"env_instrument_code\",instrument_code);\r",
+							"console.log(\"instruemnt code value from env variable is \"+pm.environment.get(\"env_instrument_code\"))\r",
+							"\r",
+							"// Response Code\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Response Body \r",
+							"pm.test(\"Response| Body | Check the schema is valid\",function(){\r",
+							"   pm.response.to.have.jsonSchema(dataSchema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response| Body | Check the total object count\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    console.log(\" total object value is \" + jsonData.length)\r",
+							"    pm.expect(jsonData.length).to.eql(105);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response| Body | contains given currency<XRP> & precision <8>\", function () {\r",
+							"    // Finiding the Required block which contains the given currency and then validate its precision\r",
+							"    for (let i = 0; i < jsonData.length; i++) {\r",
+							"\r",
+							"        if (jsonData[i].code == \"XRP\") {\r",
+							"            pm.expect(jsonData[i].precision == 8);\r",
+							"\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"// Headers\r",
+							"pm.test(\" Response | Header | Content-Type |value =  application/json | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\" Header | Server |value =  cloudflare | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Server\");\r",
+							"    pm.expect(pm.response.headers.get('Server')).to.eql('cloudflare');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "9be01836-d577-44ce-8d3c-0acc4e53b932",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url}}/currencies"
+			},
+			"response": []
+		},
+		{
+			"name": "GetCandleSticks_Positive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "68fa3cf8-aa3c-4e2f-9513-d1ced7094ce7",
+						"exec": [
+							"// Randomly generated instrument code is not working for positive check, hence reseting back to known instruement code BTC_EUR in PRe test script.\r",
+							"\r",
+							"\r",
+							"let jsonDataCandleSticks = pm.response.json();\r",
+							"\r",
+							"let dataSchemaCandleSticks =\r",
+							"{ \r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"instrument_code\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"granularity\": {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"unit\": {\r",
+							"              \"type\": \"string\"\r",
+							"            },\r",
+							"            \"period\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"unit\",\r",
+							"            \"period\"\r",
+							"          ]\r",
+							"        },\r",
+							"        \"high\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"low\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"open\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"close\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"total_amount\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"volume\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"time\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"last_sequence\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"instrument_code\",\r",
+							"        \"granularity\",\r",
+							"        \"high\",\r",
+							"        \"low\",\r",
+							"        \"open\",\r",
+							"        \"close\",\r",
+							"        \"total_amount\",\r",
+							"        \"volume\",\r",
+							"        \"time\",\r",
+							"        \"last_sequence\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"};\r",
+							"\r",
+							"// Response Code\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"WIP <--> Should work with defined/ANY currency pair and provide 200 response\",function(){\r",
+							"    // We should retrive any two currency pair from currecncy response and set to to env variable\r",
+							"    //  set to BTC_EUROC\r",
+							"    // \r",
+							"    // Print the set instrument code\r",
+							"    // check the response code\r",
+							"    // Or we can use Data driven paramenter where defiened currency pair can be used and known outputs.\r",
+							"})\r",
+							"\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Response Body \r",
+							"pm.test(\"Response| Body | Check the schema is valid\",function(){\r",
+							"   pm.response.to.have.jsonSchema(dataSchemaCandleSticks);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response| Body | Check the total object count\", function () {\r",
+							"    var jsonDataCandleSticks = pm.response.json();\r",
+							"    console.log(\" total object value is \" + jsonDataCandleSticks.length)\r",
+							"    pm.expect(jsonDataCandleSticks.length).to.eql(3355);\r",
+							"});\r",
+							"\r",
+							"//->todo<- Check the sequence number ordering\r",
+							"\r",
+							"// Assert the provided paramenter value in  response body\r",
+							"pm.test(\" Response| Body |Check the provided param value is present \",function(){\r",
+							"    \r",
+							"    for (let i = 0; i < jsonDataCandleSticks.length; i++) {\r",
+							"    pm.expect(jsonDataCandleSticks[i].instrument_code == pm.environment.get(\"env_instrument_code\"),\"Array block \"+i+\" instrument code is not matched\");\r",
+							"    pm.expect(jsonDataCandleSticks[i].granularity.unit == pm.environment.get(\"env_unit_var\"),\"Array block \"+i+\" granularity - unit is not matched\");\r",
+							"    pm.expect(jsonDataCandleSticks[i].granularity.period == pm.environment.get(\"env_period_var\"),\"Array block \"+i+\" granularity - period is not matched\");\r",
+							"            \r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Headers\r",
+							"pm.test(\" Response | Header | Content-Type |value =  application/json | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\" Header | Server |value =  cloudflare | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Server\");\r",
+							"    pm.expect(pm.response.headers.get('Server')).to.eql('cloudflare');\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "602758e0-33e4-4364-b86e-a0eb5e497edc",
+						"exec": [
+							"// Randomly generated instrument code is not working for positive check, hence reseting back to known instruement code BTC_EUR\r",
+							"pm.environment.set(\"env_instrument_code\",\"BTC_EUR\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "cd1d0648-bbd6-424a-9db8-46050c80f6b7",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/candlesticks/{{env_instrument_code}}?unit={{env_unit_var}}&period={{env_period_var}}&from=2023-01-09T02%3A59%3A59.999Z&to=2023-10-09T04%3A59%3A59.999Z",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"candlesticks",
+						"{{env_instrument_code}}"
+					],
+					"query": [
+						{
+							"key": "unit",
+							"value": "{{env_unit_var}}"
+						},
+						{
+							"key": "period",
+							"value": "{{env_period_var}}"
+						},
+						{
+							"key": "from",
+							"value": "2023-01-09T02%3A59%3A59.999Z"
+						},
+						{
+							"key": "to",
+							"value": "2023-10-09T04%3A59%3A59.999Z"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFeesGroups",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dc2e7763-5d05-40b2-8321-4051bf05a8cb",
+						"exec": [
+							"let jsonDataFees=pm.response.json();\r",
+							"const jsonDataSchemaFees = \r",
+							"{\r",
+							"\r",
+							"  \"items\": [\r",
+							"    {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"fee_group_id\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"display_text\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"volume_currency\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"fee_tiers\": {\r",
+							"          \"type\": \"array\",\r",
+							"          \"items\": [\r",
+							"            {\r",
+							"              \"type\": \"object\",\r",
+							"              \"properties\": {\r",
+							"                \"volume\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"fee_group_id\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"maker_fee\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"taker_fee\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                }\r",
+							"              },\r",
+							"              \"required\": [\r",
+							"                \"volume\",\r",
+							"                \"fee_group_id\",\r",
+							"                \"maker_fee\",\r",
+							"                \"taker_fee\"\r",
+							"              ]\r",
+							"            }\r",
+							"\t\t\t\r",
+							"          ]\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"fee_group_id\",\r",
+							"        \"display_text\",\r",
+							"        \"volume_currency\",\r",
+							"        \"fee_tiers\"\r",
+							"      ]\r",
+							"    }\r",
+							"  ]\r",
+							"};\r",
+							"const volume = [\"0.0\",\"1000.0\",\"2500.0\",\"100000.0\",\"500000.0\",\"1000000.0\",\"5000000.0\",\"10000000.0\",\"25000000.0\",\"100000000.0\",\"250000000.0\",\"500000000.0\"];\r",
+							"const maker_fees = [\"0.25\",\"0.0\",\"0.15\",\"0.1\",\"0.06\",\"0.05\",\"0.02\",\"0.01\",\"0.0\",\"0.0\",\"0.0\",\"0.0\"];\r",
+							"const taker_fees = [\"0.25\",\"0.0\",\"0.25\",\"0.2\",\"0.12\",\"0.1\",\"0.05\",\"0.04\",\"0.03\",\"0.025\",\"0.02\",\"0.01\"];\r",
+							"\r",
+							"// Response Code\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Response Body \r",
+							"pm.test(\"Response| Body | Check the schema is valid\",function(){\r",
+							"   pm.response.to.have.jsonSchema(jsonDataSchemaFees);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response| Body | Check the total object count and fees tiers\", function () {\r",
+							"\r",
+							"    pm.expect(jsonDataFees.length).to.eql(1);\r",
+							"    pm.expect(jsonDataFees[0].fee_tiers.length).to.eql(12);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response| Body | Check the each fees tiers and its content\", function () {\r",
+							"\r",
+							"    pm.expect(jsonDataFees.length).to.eql(1);\r",
+							"    pm.expect(jsonDataFees[0].fee_tiers.length).to.eql(12);\r",
+							"\r",
+							"for ( let i=0 ; i<12;i++){\r",
+							"    pm.expect(jsonDataFees[0].fee_tiers[i].volume).to.eql(volume[i],\"fee teir \"+i+\" volume is not matched\");\r",
+							"    pm.expect(jsonDataFees[0].fee_tiers[i].maker_fee).to.eql(maker_fees[i],\"fee teir \"+i+\" maker fee is not matched\");\r",
+							"    pm.expect(jsonDataFees[0].fee_tiers[i].taker_fee).to.eql(taker_fees[i],\"fee teir  \"+i+\" taker fee is not matched\");    \r",
+							"}    \r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Headers\r",
+							"pm.test(\" Response | Header | Content-Type |value =  application/json | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\" Header | Server |value =  cloudflare | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Server\");\r",
+							"    pm.expect(pm.response.headers.get('Server')).to.eql('cloudflare');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "ef2f35d0-f9ac-4070-b777-2cbe6536ffd9",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/fees"
+			},
+			"response": []
+		},
+		{
+			"name": "GetInstruments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f5f6501-5a02-4800-bbd9-c0af166a7090",
+						"exec": [
+							"// Response Code\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// Headers\r",
+							"pm.test(\" Response | Header | Content-Type |value =  application/json | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\" Header | Server |value =  cloudflare | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Server\");\r",
+							"    pm.expect(pm.response.headers.get('Server')).to.eql('cloudflare');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "374799d8-7a14-477b-8fbb-d9df76aac9a1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/instruments"
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrderBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "96e2b357-885a-45bc-ad77-d1535296ec3a",
+						"exec": [
+							"let jsonDataOrderBooks = pm.response.json();\r",
+							"//ResponseCode\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response| Body | Check the total bid and ask depth\", function () {\r",
+							"  \r",
+							"    pm.expect(jsonDataOrderBooks.bids.length).to.eql(2);\r",
+							"    pm.expect(jsonDataOrderBooks.asks.length).to.eql(2);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Headers\r",
+							"pm.test(\" Response | Header | Content-Type |value =  application/json | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\" Header | Server |value =  cloudflare | Check param is present & its value \", function () {\r",
+							"    pm.response.to.have.header(\"Server\");\r",
+							"    pm.expect(pm.response.headers.get('Server')).to.eql('cloudflare');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "3a76254b-356d-47f6-8620-ca696dfc9ac2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.onetrading.com/public/v1/order-book/BTC_EUR?level=2&depth=2",
+					"protocol": "https",
+					"host": [
+						"api",
+						"onetrading",
+						"com"
+					],
+					"path": [
+						"public",
+						"v1",
+						"order-book",
+						"BTC_EUR"
+					],
+					"query": [
+						{
+							"key": "level",
+							"value": "2"
+						},
+						{
+							"key": "depth",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetMarketTicker",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca67468e-b172-4665-98eb-458e40ba2726",
+						"exec": [
+							"//  Generate random instrument code\r",
+							"const marketTickerResponse = pm.response.json();\r",
+							"let randomNumberInstrument = Math.floor(Math.random() *  marketTickerResponse.length);\r",
+							"let instrumentCode = marketTickerResponse[randomNumberInstrument].instrument_code;\r",
+							"pm.environment.set(\"env_market_ticker_instrument\",instrumentCode);\r",
+							"\r",
+							"\r",
+							"//ResponseCode\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"// "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "2fa089fa-18da-4c9d-adb1-9a9386c21f8b",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/market-ticker"
+			},
+			"response": []
+		},
+		{
+			"name": "GetMarketTickerForInstruments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bdd84356-0bd3-475c-8f55-170c13ff85c5",
+						"exec": [
+							"// NOT _ instrument code is retrived from Market Ticker\r",
+							"\r",
+							"//ResponseCode\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "55b44e6e-3c8e-4b38-bcc3-0f50cf338627",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/market-ticker/{{env_market_ticker_instrument}}"
+			},
+			"response": []
+		},
+		{
+			"name": "GetPriceTicks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ee7a4236-55c5-4c53-bccd-7f88dc35b1d0",
+						"exec": [
+							"// NOT _ instrument code is retrived from Market Ticker\r",
+							"\r",
+							"//ResponseCode\r",
+							"pm.test(\"Response| Check Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Respone time\r",
+							"pm.test( \"Response| Check Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "0d86b1a2-bea2-4452-b04c-7a000d797561",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{url}}/price-ticks/{{env_market_ticker_instrument}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "76b4b148-6584-4630-9eae-74f0bce57600",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "36e2433a-8af5-491a-8136-cd5bcf7142be",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

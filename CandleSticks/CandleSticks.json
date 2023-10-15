@@ -37,6 +37,8 @@
 							"pm.test(\"Response | Check Status code and status is as per the CSV file - CandleSticks\", function () {\r",
 							"    // Following code fails when run using newman/CLI\r",
 							"    pm.expect(pm.response.code).to.eql(pm.collectionVariables.get(\"candlesticks_response_code\"))\r",
+							"    console.log(\"Response code is \"+pm.response.code);\r",
+							"    console.log(\"Retrived response code is \"+pm.response.code);\r",
 							"    // pm.response.to.have.status(pm.collectionVariables.get(\"candlesticks_response_code\"));\r",
 							"    // let responsecodeInNumber = pm.response.code;\r",
 							"    // console.log(responsecodeInNumber.toString());\r",

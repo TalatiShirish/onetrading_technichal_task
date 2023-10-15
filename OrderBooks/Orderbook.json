@@ -29,8 +29,6 @@
 							"let orderbook_response_text = pm.response.text();\r",
 							"\r",
 							"pm.test(\"Response | Check Status code and status is as per the CSV file - Orderbook\", function () {\r",
-							"    // Following code fails when run using newman/CLI\r",
-							"    // pm.response.to.have.status(pm.collectionVariables.get(\"orderbook_status_code\"));\r",
 							"        pm.expect((pm.response.code)==(pm.collectionVariables.get(\"orderbook_status_code\")),\"Orderbook response code is not matched for order instrument code =\"+pm.iterationData.get(\"orderbook_instrument_code\"))\r",
 							"\r",
 							"    pm.expect(pm.response.status).to.include(pm.collectionVariables.get(\"orderbook_response_status\"),\"Orderbook response message is not matched for order instrument code =\"+pm.iterationData.get(\"orderbook_instrument_code\"));\r",

@@ -22,5 +22,6 @@
 - Ensure <collection.json>, <Environement.environment.json> and <data.csv> files are in same folder
 - Open the command prompt and navigate to the Postman collection folder
 - run the following command
-  - newman run DataDriven_CandleSticks_Error_Response.postman_collection.json -e TestDomain.postman_environment.json -d CandleSticks.csv -r htmlextra --insecure
+  - newman run <collectionfile.json> -e <environemntfile.json> -d <datafile.csv> <-r reportingtag> <--insecure>  
+    - e.g newman run <DataDriven_CandleSticks_Error_Response.postman_collection.json> -e <TestDomain.postman_environment.json> -d <CandleSticks.csv> -r htmlextra --insecure
   - Html report is present in the newman dir under the postman execution folder
